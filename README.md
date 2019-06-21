@@ -8,6 +8,9 @@ nside Two folder is There
 >> Go Inside frontend do npm install
 >> Install Angular Cli
 Then ng serve
+# to set different portnumber than default 4200
+ng serve --port=portnumber
+
 
 Your fronend Application will Start
 
