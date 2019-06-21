@@ -7,7 +7,7 @@ nside Two folder is There
 
 >> Go Inside frontend do npm install
 >> Install Angular Cli
-Then ng serv
+Then ng serve
 
 Your fronend Application will Start
 
