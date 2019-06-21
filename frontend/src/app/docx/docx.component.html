@@ -1,0 +1,43 @@
+
+<!-- Begin page content -->
+<main role="main" class="container-fluid custom-card">
+    <div class="row">
+      <div class="col-sm-7">
+          <h1 class="heading-title">Scripts</h1>
+      </div>
+      <div class="col-sm-4">
+          <div class="dropdown">
+              <button type="button" class="btn btn-primary dropdown-toggle" (click)="toggleDropDown()">
+               Select Script
+              </button>
+              <div class="dropdown-menu" style="display: block" *ngIf="dropdown">
+                <ng-container *ngFor="let scData of scriptsList">
+                <a class="dropdown-item" (click) = "selectScript(scData.script)" > {{ scData.script}}</a>
+              </ng-container>
+              </div>
+            </div>
+      </div>
+    </div>
+  <div>&nbsp;</div>
+    <table class="table table-bordered custom-table step-table">
+        <thead>
+          <tr>
+            <th width="10%" scope="col">#</th>
+            <th width="60%" scope="col">Steps</th>
+            <th width="30%" scope="col">Notes</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let stetData of transformStep; let ind = index">
+            <th scope="row">{{ ind + 1 }}</th>
+            <td>{{ stetData?.step}}</td>
+            <td>{{ stetData?.note}}</td>
+          </tr>
+        </tbody>
+      </table>
+      <div>&nbsp;</div>
+      <div class="d-flex justify-content-end">
+        <button *ngIf="isTransformData" title="Back to steplist" class="btn" (click)="generateDocx()">Generate Docx</button>
+        </div>
+  </main>
+  

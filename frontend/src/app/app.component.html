@@ -1,0 +1,54 @@
+<div class="wrapper">
+    <div class="sidebar-menu">
+        <div class="app-name" (click)="toggleNav()">
+            <span class="font"><img src="./../assets/images/icons8-menu-48.png"></span>
+            <span class="name" [ngClass]="{'d-none': !isExpandNav}">APP DEMO</span>
+        </div>
+
+        <ul [ngClass]="{'expand-menu': isExpandNav}">
+            <li>
+                <a title="Steps" [routerLink]="['/welcome']" routerLinkActive="router-link-active">
+                    <span class="font"><img src="./../assets/images/icons8-color-50.png"></span>
+                    <span class="link">Home</span>
+                </a>
+            </li>
+
+            <li>
+                <a title="Steps" [routerLink]="['/steps-detail']" routerLinkActive="router-link-active">
+                    <span class="font"><img src="./../assets/images/icons8-staircase-48.png"></span>
+                    <span class="link">Steps</span>
+                </a>
+            </li>
+            <li>
+                <a title="Scripts" [routerLink]="['/script']" routerLinkActive="router-link-active">
+                    <span class="font"><img src="./../assets/images/icons8-source-code-40.png"></span>
+                    <span class="link">Scripts</span>
+                </a>
+            </li>
+
+            <!-- <li>
+                <a title="Generate Document" [routerLink]="['/generate-docx']" routerLinkActive="router-link-active" >
+                    <span class="font"><img src="./../assets/images/icons8-microsoft-word-48.png"></span>
+                    <span class="link">Generate Docx</span>
+                </a>
+            </li> -->
+        </ul>
+    </div>
+    <div class="content-wrapper">
+        <header class="mainheader">
+            <!-- Fixed navbar -->
+            <nav class="navbar navbar-expand-md pull-right">
+                <form class="form-inline mt-2 mt-md-0">
+                    <input class="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search">
+                    <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+                </form>
+            </nav>
+        </header>
+
+        <div class="main-container">
+            <router-outlet></router-outlet>
+        </div>
+        <div class="footer"></div>
+    </div>
+    <!--header strat here-->
+</div>
