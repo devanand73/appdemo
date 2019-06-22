@@ -1,11 +1,10 @@
 const database = require('../helper/database');
 const Schema = database.Schema;
 
-const StepSchema = new Schema({
-    stepName: String,
+const mplaceholder = new Schema({
+    name: String,
     status: Boolean,
     created_date: String,
 });
 
-const Mstep = database.model('steps', StepSchema);
-module.exports = Mstep;
+module.exports = database.model('placeholder', mplaceholder);
