@@ -1,60 +1,79 @@
 <!-- Begin page content -->
 <main role="main" class="container-fluid custom-card">
-  <h1 class="heading-title">Scripts</h1>
-  <form>
-    <div class="row">
-      <div class="col-sm-6">
-        <input class="form-control" autocomplete="off" [(ngModel)]="scriptModel.script" name="script"
-          placeholder="Script" id="script">
-      </div>
+  <h1 class="heading-title">{{ STEPCONST?.headingTitle }}</h1>
+  <div class="row mb-3">
+    <div class="col-sm-9">&nbsp;</div>
+    <div class="col-sm-3">
+          <select [disabled] ="eventAction ==='edit'" class="form-control" [(ngModel)]="selectedStep" (ngModelChange)="selectStep($event)">
+            <option [value]="null">{{ STEPCONST?.selectLabel }}</option>
+            <option *ngFor="let list of listOfStep" [value]="list._id"> {{ list.stepsName }}</option>
+          </select>
+    </div>
+  </div>
 
-      <div class="col-sm-2">
-        <button type="submit" (click)="addScript()" class="btn btn-primary">Add Script</button>
+  <div class="row">
+    <div class="col-sm-7">
+      <textarea class="form-control" [(ngModel)]="steplist.step" name="step" placeholder="{{ STEPCONST?.stepPlaceHolder }}" id="steps"></textarea>
+    </div>
+    <div class="col-sm-5">
+      <div class="d-flex">
+        <textarea class="form-control" [(ngModel)]="steplist.note" name="note" placeholder="{{ STEPCONST?.notePlaceHolder }}"
+          id="note"></textarea>
+        <button [disabled]="!(steplist.step && steplist.note)" (click)="addstep()" class="ml-4 btn pull-right btn-info custom-add-btn">{{ STEPCONST?.addBtn }}</button>
       </div>
     </div>
-  </form>
-</main>
+  </div>
 
-<main class="container-fluid custom-card">
+  <div>&nbsp;</div>
+
   <table class="table table-bordered custom-table step-table">
     <thead>
-        <tr>
-            <th class="first-column">#</th>
-            <th class="step-column">Steps Name</th>
-            <th class="notes-column">Created Date</th>
-            <th class="action-column">Action</th>
-          </tr>
+      <tr>
+        <th class="first-column">#</th>
+        <th class="step-column">{{ STEPCONST?.tableColStep }}</th>
+        <th class="notes-column">{{ STEPCONST?.tableColNotes }}</th>
+        <th class="action-column">{{ STEPCONST?.tableColAction }}</th>
+      </tr>
     </thead>
-
     <tbody>
-      <tr *ngFor="let stepdata of scriptDetail; let ind = index">
-        <th>{{ ind + 1 }}</th>
-        <td>{{stepdata?.script}}</td>
-        <td>{{stepdata?.created_date | date: shortDate}}</td>
-        <td>
-            <a title="Delete Script" class="action delete" (click)="openModal(content, stepdata._id, ind)">
-                <i class="fa fa-trash" aria-hidden="true"></i> Delete
-            </a>
-        </td>
+      <tr *ngFor="let steps of stepModel?.stepsDetail; let ind = index">
+        <th><label class="checkbox">
+            <input type="checkbox" [value]="steps.status" [(ngModel)]="steps.status" />
+            <span></span>
+          </label></th>
+        <td>{{ steps?.step }}</td>
+        <td>{{steps?.note}}</td>
+        <td><a class="delete" (click)="delete(steps._id, ind)"><i class="fa fa-trash" aria-hidden="true"></i> Delete</a> </td>
       </tr>
     </tbody>
   </table>
+  <div>&nbsp;</div>
+  <div class="d-flex justify-content-end">
+    <button title="Back to steplist" class="btn" (click)="cancel()">{{ BTNCONST?.cancel }}</button>
+    <button class="btn ml-3 btn-success" [disabled]="stepModel?.stepsDetail.length === 0" *ngIf="eventAction == 'add'" (click)="openModal(content)">{{ BTNCONST?.save }}</button>
+    <button class="btn ml-3 btn-success" *ngIf="eventAction == 'edit'" (click)="update()">{{ BTNCONST?.update }}</button>
+  </div>
 </main>
 
 <div class="step-modal">
-    <ng-template #content let-modal>
-      <div class="modal-header red-bg">
-        <h4 class="modal-title" id="modal-basic-title">Delete Steps</h4>
-        <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        <p>Are you sure want to delete steps ?</p>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn" (click)="modal.dismiss('dismiss')">Cancel</button>
-        <button type="button" class="btn btn-success" (click)="modal.close('delete')">Delete</button>
-      </div>
-    </ng-template>
-  </div>
+  <ng-template #content let-modal>
+    <div class="modal-header">
+      <h4 class="modal-title" id="modal-basic-title">{{ STEPCONST?.modalHeading }}</h4>
+      <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="modal-body">
+      <form>
+        <div class="form-group">
+          <div class="input-group">
+            <input id="stepname" #stepname class="form-control" placeholder="{{ STEPCONST?.stepName }}">
+          </div>
+        </div>
+      </form>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-success" (click)="modal.close(stepname)">{{ STEPCONST?.stepPlaceHolder }}</button>
+    </div>
+  </ng-template>
+</div>

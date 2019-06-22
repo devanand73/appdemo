@@ -9,7 +9,8 @@ export const STEP = {
     tableColAction: 'Action',
     modalHeading: 'Save Step',
     addBtn: 'Add Step',
-    stepName: 'Step Name'
+    stepName: 'Step Name',
+    validationErr: 'All field is required to save step'
 
 };
 
