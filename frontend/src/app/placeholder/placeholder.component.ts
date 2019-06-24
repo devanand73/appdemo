@@ -1,60 +1,64 @@
 import { Component, OnInit } from '@angular/core';
-import { StepsoutputService } from './placeholder.service';
-import { ScriptModel } from './placeholder.model';
+import { PlaceHolderService } from './placeholder.service';
+import { PlaceHolderModel } from './placeholder.model';
 import { ToastrService } from 'ngx-toastr';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
-  selector: 'app-script',
-  templateUrl: './script.component.html',
-  styleUrls: ['./script.component.scss']
+  selector: 'app-placeholder',
+  templateUrl: './placeholder.component.html',
+  styleUrls: ['./placeholder.component.scss']
 })
-export class ScriptComponent implements OnInit {
+export class PlaceHolderComponent implements OnInit {
 
-  scriptModel: ScriptModel;
-  scriptDetail= [];
+  placeHolderModel: PlaceHolderModel;
+  placeHolder = [];
   constructor(
-    private script: StepsoutputService,
+    private plchldservice: PlaceHolderService,
     private toastr: ToastrService,
     private modalService: NgbModal,
-  ) { 
-    this.scriptModel = new ScriptModel();
+  ) {
+    this.placeHolderModel = new PlaceHolderModel();
   }
 
   ngOnInit() {
-    this.script.getScript()
+    this.plchldservice.get()
       .subscribe((response: any) => {
-        this.scriptDetail = response;
+        this.placeHolder = response;
       });
   }
 
-  addScript() {
-    if(!this.scriptModel.script) {
-      this.toastr.error('Script is required','');
+  addPlaceHolder() {
+    if (!this.placeHolderModel.name) {
+      this.toastr.error('Script is required', '');
       return;
     }
 
-    this.scriptModel.created_date = new Date().toISOString();
-    this.script.addScript(this.scriptModel)
-        .subscribe((res) => {
-          this.scriptDetail.unshift(res);
-        this.scriptModel = new ScriptModel();
+    this.placeHolderModel.createdDate = new Date().toISOString();
+    this.plchldservice.add(this.placeHolderModel)
+      .subscribe((res) => {
+        this.placeHolder.unshift(res);
+        this.placeHolderModel = new PlaceHolderModel();
         this.toastr.success('Script added successfully', '');
-        })
+      });
   }
 
-  openModal(content, scrptId, index) {
+  openModal(content, scrptId: string, index: number) {
     this.modalService.open(content, { size: 'sm' })
       .result.then((result) => {
-        if(result === 'delete') {
-          this.script.deleteScript(scrptId).subscribe((response) => {
-            this.scriptDetail.splice(index, 1);
-            this.toastr.success('Steps successfully deleted');
-          });
+        if (result === 'delete') {
+          this.deletePlaceHolder(scrptId, index);
         }
-      }, (err)=>{
+      }, (err) => {
         console.log(err);
       });
+  }
+
+  deletePlaceHolder(scrptId: string, index: number) {
+    this.plchldservice.delete(scrptId).subscribe((response) => {
+      this.placeHolder.splice(index, 1);
+      this.toastr.success('Steps successfully deleted');
+    });
   }
 
 }

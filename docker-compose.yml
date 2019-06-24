@@ -1,0 +1,24 @@
+version: "3"
+services: 
+  angularapp:
+    container_name: angularapp
+    image: nginx
+    volumes:
+    - ./frontend:/usr/share/nginx/html
+    ports:
+    - "80:80"
+
+  nodeapp: 
+      container_name: nodeapp
+      image: node:alpine 
+      working_dir: '/usr/src/app'
+      networks: 
+            - arvind
+      ports: 
+        - "3000:8082"
+      volumes: 
+          - "./backend:/usr/src/app"
+      command: "npx pm2 start ecosystem.config.js --no-daemon"
+      
+networks:   
+  arvind:

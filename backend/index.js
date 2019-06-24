@@ -5,6 +5,7 @@ const env = require('./config/config');
 let step = require('./controller/step');
 let script = require('./controller/script');
 let counter = require('./controller/counter');
+let placeholder = require('./controller/placeholder');
 
 app.use(function (req, res, next) {
 	res.setHeader('Access-Control-Allow-Origin', '*');
@@ -19,6 +20,7 @@ app.use(function (req, res, next) {
 	}
 });
 
+app.use('/placeholder', placeholder);
 app.use('/counter', counter);
 app.use('/script', script);
 app.use('/step', step);

@@ -1,148 +1,181 @@
-// import { Component, OnInit } from '@angular/core';
-// // import { StepModel, Steplist } from './steps.model';
-// import { StepsService } from './steps.service';
-// import { ToastrService } from 'ngx-toastr';
-// import { NgbModal, NgbModalConfig } from '@ng-bootstrap/ng-bootstrap';
-// import { Router, ActivatedRoute } from '@angular/router';
-// import { STEP, BTNLABEL } from '../constant/app.constant';
+import { Component, OnInit } from '@angular/core';
+import { StepModel } from './../steps/steps.model';
+import { StepsService } from './../steps/steps.service';
+import { ToastrService } from 'ngx-toastr';
+import { NgbModal, NgbModalConfig } from '@ng-bootstrap/ng-bootstrap';
+import { Router } from '@angular/router';
+import { STEP, BTNLABEL } from '../constant/app.constant';
+import { ScriptModel } from './script.model';
+import { ScriptService } from './script.service';
 
+@Component({
+  selector: 'app-steps',
+  templateUrl: './script.component.html',
+  styleUrls: ['./script.component.scss']
+})
+export class ScriptComponent implements OnInit {
 
+  STEPCONST = STEP; // Constant Import from App Constant File
+  BTNCONST = BTNLABEL; // Constatant
+  stepModel: StepModel;
+  listOfStep = Array();
+  script = null;
+  isEnableSave = '';
+  stepList = [];
+  scriptModel: ScriptModel;
+  scriptList: [];
+  scriptDetail: any;
+  stepObj = {};
+  constructor(
+    config: NgbModalConfig,
+    private stepSrvice: StepsService, // Injecting Step service for Add, Fetch and Update
+    private toastr: ToastrService, // Injecting Toaster Service for alert,
+    private modalService: NgbModal, // Injecting Bootstrap Modal Service injection
+    private route: Router, // Injecting Angular Router for Navigation,
+    private scriptService: ScriptService
+  ) {
+    this.scriptModel = new ScriptModel();
+    this.stepModel = new StepModel(); // Creating pojo object along with name
+    config.backdrop = 'static'; // Disabling Modal on outside click
+    config.keyboard = false; // Disable cancel Modal on ESC key
+  }
 
-// @Component({
-//   selector: 'app-steps',
-//   templateUrl: './steps.component.html',
-//   styleUrls: ['./steps.component.scss']
-// })
-// export class StepsComponent implements OnInit {
+  // Init function for more detail please refer Angular.io guide
+  ngOnInit() {
+    this.getSteps(); //  List of Steps api (Name and id only)
+    this.getScript();
+  }
 
-//   STEPCONST = STEP; // Constant Import from App Constant File
-//   BTNCONST = BTNLABEL; // Constatant
+// get all steps data from api
 
-//   selectedStep: any = null;
-//   stepId: string;
-//   eventAction = 'add';
-//   stepName: string;
-//   loading: true;
-//   steplist: Steplist;
-//   stepModel: StepModel;
-//   stepDetail = [];
-//   listOfStep = [];
+  getSteps() {
+    this.stepSrvice.getStep()
+      .subscribe((response: any) => {
+        this.listOfStep = response;
+        this.listOfStep.forEach((data) => {
+          data.scriptStatus = false;
+          if (this.stepObj[data._id] === undefined) {
+            this.stepObj[data._id] = data;
+          }
+        });
+      });
+  }
 
-  
+// fetch all script data from api
 
+  getScript() {
+    this.scriptService.getScript()
+      .subscribe((res: any) => {
+        this.scriptList = res;
+      });
+  }
 
-//   constructor(
-//     config: NgbModalConfig,
-//     private stepSrvice: StepsService, // Injecting Step service for Add, Fetch and Update
-//     private toastr: ToastrService, // Injecting Toaster Service for alert,
-//     private modalService: NgbModal, // Injecting Bootstrap Modal Service injection
-//     private activatedRoute: ActivatedRoute, // Injecting Activate Roter Service
-//     private route: Router // Injecting Angular Router for Navigation
-//   ) {
-//     this.steplist = new Steplist(); // Creating Pojo Object of step list
-//     this.stepModel = new StepModel(); // Creating pojo object along with name
-//     config.backdrop = 'static'; // Disabling Modal on outside click
-//     config.keyboard = false; // Disable cancel Modal on ESC key
-//   }
+  // Drop down function
 
+  selectScript(script: any) {
+    this.resetSelect();
+    if (this.script === null) { // If you are not select any from down return
+      return;
+    }
 
-//   // Init function for more detail please refer Angular.io guide
-//   ngOnInit() {
-//     this.activatedRoute.params.subscribe((param) => {
-//       if (param['editId']) {
-//         this.eventAction = 'edit';
-//         this.stepId = param['editId'];
-//         this.getStepDetail(param['editId']);
-//       }
-//     });
-//     this.getSteps(); //  List of Steps api (Name and id only)
-//   }
+    if (this.script === 'new') {
+      this.isEnableSave = this.script;
+    } else {
+      if (this.script && this.script.steps && this.script.steps.length > 0) {
+        this.isEnableSave = 'update';
+        this.scriptModel = this.script;
+        this.mapScriptStep();
+      }
+    }
+  }
 
-//   getStepDetail(id: string) {
-//     this.stepSrvice.find(id)
-//       .subscribe((response: StepModel) => {
-//         this.stepModel = response;
-//       })
-//   }
+// Map Script data if select preexisting data from drop down to make check box as true
 
-//   getSteps() {
-//     this.stepSrvice.getStep()
-//       .subscribe((response: any) => {
-//         this.listOfStep = response;
-//       });
-//   }
+  mapScriptStep() {
+    this.script.steps.forEach((listData: any) => {
+      this.stepObj[listData].scriptStatus = true;
+    });
+  }
 
-//   selectStep(id) {
-//     if(id !== null) {
-//       this.stepSrvice.find(id).subscribe((response)=> {
-//         this.stepModel = response;
-//         this.stepModel.stepsName = '';
-//         this.stepModel._id = undefined;
-//         this.toastr.success('successfull imported');
-//         this.eventAction = 'add';
-//       });
-//     }
-//   }
+  // Deselection of checkbox and making model empty if you selection new or null
 
-//   // Pusing steps into temp Array
+  resetSelect() {
+    this.scriptModel.steps = [];
+    this.listOfStep.forEach((data) => {
+      data.scriptStatus = false;
+    });
+  }
 
-//   addstep() {
-//     this.steplist.status = true;
-//     if (!this.steplist.step || !this.steplist.note) {
-//       this.toastr.error('All field is mandatory', '');
-//       return;
-//     }
+// Open Modal for adding new script name
 
-//     this.stepModel.stepsDetail.unshift(this.steplist);
-//     this.steplist = new Steplist();
-//   }
+  openSaveModal(content) {
+    if (this.scriptModel.steps.length === 0) {
+      this.toastr.warning('Please select at least one step for saving script');
+      return;
+    }
+    this.modalService.open(content)
+      .result.then((result) => { // If Result will get name will save data
+        if (result && result.value) {
+          this.scriptModel.name = result.value;
+          this.scriptModel.status = true;
+          this.scriptService.addScript(this.scriptModel)
+            .subscribe((data) => {
+              this.toastr.success('Script Successfully saved');
+              this.route.navigate(['welcome']);
+            });
+        }
+      });
+  }
 
-//   // Poping Array element from temp Array (Its Not Deleting any Data from database)
+// To save record data
 
-//   delete(id: string, index: number) {
-//     this.stepModel.stepsDetail.splice(index, 1);
-//   }
+  save() {
+    if (!this.stepModel.stepName || !this.stepModel.note) {
+      this.toastr.error(this.STEPCONST.validationErr, '');
+      return;
+    }
 
-//   //@@ Open Modal for Entering Name of Step
-//   //@@
+    this.stepSrvice.addStep(this.stepModel)
+      .subscribe((response) => {
+        this.toastr.success('Step sucessfully saved');
+        this.listOfStep.unshift(response);
+        this.stepModel = new StepModel();
+      });
+  }
 
-//   openModal(content) {
-//     this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title' })
-//       .result.then((result) => {
-//         if (result.value) {
-//           this.stepModel.created_date = new Date().toISOString();
-//           this.stepModel.stepsName = result.value;
-//           this.save(this.stepModel);
-//         }
-//       });
-//   }
+// Select check box true aka Adding step into script
 
-//   //@Dissmiss Modal
-//   //@@
+  selectStep(event, id: string) {
+    if (event.target.checked === true) {
+      this.scriptModel.steps.push(id);
+    }
 
+    if (event.target.checked === false) {
+      const index = this.scriptModel.steps.indexOf(id);
+      if (index > -1) {
+        this.scriptModel.steps.splice(index, 1);
+      }
+    }
+  }
 
-//   // If application is new Then save will enable
+// Back Navigation to go back in welcome screen
 
-//   save(data: StepModel) {
-//     this.stepSrvice.addStep(data)
-//       .subscribe((response) => {
-//         this.toastr.success('Step sucessfully saved');
-//         this.route.navigate(['steps-detail']);
-//       });
-//   }
+  back() {
+    this.route.navigate(['welcome']);
+  }
 
-//   // Edit application will update
+// Save data
 
-//   update() {
-//     this.stepSrvice.updateStep(this.stepModel)
-//       .subscribe((response) => {
-//           this.toastr.success('Steps updated Successfully');
-//           this.route.navigate(['steps-detail']);
-//       });
-//   }
+  update() {
+    if (!this.scriptModel['_id'] || !this.scriptModel.name) {
+      this.toastr.error('Script name is required', '');
+    }
 
-//   cancel() {
-//     this.route.navigate(['steps-detail']);
-//   }
+    this.scriptService.updateScript(this.scriptModel)
+      .subscribe((res) => {
+        this.toastr.success('Script update successfully');
+        this.route.navigate(['welcome']);
+      });
+  }
 
-// }
+}

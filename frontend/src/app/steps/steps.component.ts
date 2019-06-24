@@ -42,11 +42,15 @@ export class StepsComponent implements OnInit {
       });
   }
 
-  openModal(content) {
-    this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title' })
+  delete(content, stepId, index) {
+    this.modalService.open(content, { size: 'sm' })
       .result.then((result) => {
-        if (result.value) {
-          // this.save(this.stepModel);
+        if (result === 'delete') {
+          this.stepSrvice.deleteStep(stepId)
+            .subscribe((res) => {
+              this.listOfStep.splice(index, 1);
+              this.toastr.success('Step successfully deleted');
+            });
         }
       });
   }

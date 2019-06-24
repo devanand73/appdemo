@@ -3,21 +3,26 @@
 <main role="main" class="container-fluid custom-card">
     <div class="row">
       <div class="col-sm-7">
-          <h1 class="heading-title">Scripts</h1>
-      </div>
-      <div class="col-sm-4">
-          <div class="dropdown">
-              <button type="button" class="btn btn-primary dropdown-toggle" (click)="toggleDropDown()">
-               Select Script
-              </button>
-              <div class="dropdown-menu" style="display: block" *ngIf="dropdown">
-                <ng-container *ngFor="let scData of scriptsList">
-                <a class="dropdown-item" (click) = "selectScript(scData.script)" > {{ scData.script}}</a>
-              </ng-container>
-              </div>
-            </div>
+          <h1 class="heading-title">Generate Document</h1>
       </div>
     </div>
+    <div>&nbsp;</div>
+    <div class="row">
+      <div class="col-sm-4">
+        <select name="scrip" [(ngModel)]="scriptModel" (change)="selectScript($event)" class="form-control">
+          <option [value]="null">Select Script</option>
+          <option *ngFor="let item of scriptList" [ngValue]="item">{{ item.name }}</option>
+        </select>
+      </div>
+
+      <div class="col-sm-4">
+        <select name="placeholder" [(ngModel)]="placeHolderModel" (change)="selectPlaceholder($event)" class="form-control">
+          <option [value]="null">Select placeholder text</option>
+          <option *ngFor="let item of placeHolderList" [value]="item._id">{{ item.name }}</option>
+        </select>
+      </div>
+    </div>
+    
   <div>&nbsp;</div>
     <table class="table table-bordered custom-table step-table">
         <thead>
@@ -30,7 +35,7 @@
         <tbody>
           <tr *ngFor="let stetData of transformStep; let ind = index">
             <th scope="row">{{ ind + 1 }}</th>
-            <td>{{ stetData?.step}}</td>
+            <td>{{ stetData?.stepName}}</td>
             <td>{{ stetData?.note}}</td>
           </tr>
         </tbody>

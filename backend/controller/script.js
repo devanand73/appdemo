@@ -22,8 +22,18 @@ router.post('', function (req, res) {
 });
 
 
+router.put('', function (req, res) {
+	const data = req.body;
+	Mscript.findByIdAndUpdate({_id: data._id}, data, function(error, docs) {
+		if (error) {
+			res.status(400).send(error);
+		}
+		res.status(201).send(data);
+	});
+});
+
 router.get('', function (req, res) {
-	Mscript.find({}, '_id name created_date status', function (cerr, data) {
+	Mscript.find({}, null, function (cerr, data) {
 		if(cerr){
 			res.status(204).send(ERROR.UNKOWN_ERROR);	
 		}
@@ -31,7 +41,8 @@ router.get('', function (req, res) {
 	});
 });
 
-router.get('find/:id', function (req, res) {
+router.get('/find/:id', function (req, res) {
+	const id = req.params.id;
 	Mscript.findOne({'_id': id}, null, function (cerr, data) {
 		if(cerr){
 			res.status(204).send(ERROR.UNKOWN_ERROR);	
@@ -41,20 +52,19 @@ router.get('find/:id', function (req, res) {
 });
 
 
-router.get('step/:id', function (req, res) {
-	Mscript.findOne({'_id': id}, null, function (cerr, data) {
-		if(cerr){
-			res.status(204).send(ERROR.UNKOWN_ERROR);	
-		}
-		const stepsData = [];
-		if(data.steps && data.steps.legth > 0){
-			data.steps.forEach(element => {
-				stepsData.push(Mstep.findOne({'_id': element}));
+router.get('/step/:id', async(req, res) => {
+	const id = req.params.id;
+	const data = await Mscript.findOne({'_id': id}, null).exec();
+		if(data !== null && data['steps'] && data['steps'].length > 0){
+			data['newsteps'] = [];
+			data['steps'].forEach(element => {
+				const steps = Mstep.findOne({'_id': element}).exec();
+				console.log(steps);
+				//data['newsteps'].push(steps);
 			});
+		   // res.status(200).send(data);
+		   console.log(data);
 		}
-		data.steps = stepsData;
-		res.status(200).send(data);
-	});
 });
 
 router.post('/delete', function (req, resPonse) {

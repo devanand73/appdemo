@@ -5,6 +5,7 @@ const StepSchema = new Schema({
     stepName: String,
     status: Boolean,
     createdDate: String,
+    note: String
 });
 
 const Mstep = database.model('steps', StepSchema);
