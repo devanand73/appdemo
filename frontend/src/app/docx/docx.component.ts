@@ -8,6 +8,7 @@ import { ScriptModel } from '../script/script.model';
 import { PlaceHolderService } from '../placeholder/placeholder.service';
 import { StepsService } from '../steps/steps.service';
 import { NgxUiLoaderService } from 'ngx-ui-loader';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-docx',
@@ -30,7 +31,7 @@ export class DocxComponent implements OnInit {
   constructor(
     private placeHolderService: PlaceHolderService,
     private scriptService: ScriptService,
-    private activatedRoute: ActivatedRoute,
+    private toastr: ToastrService, // Injecting Toaster Service for alert,
     private welcomeService: WelcomeService,
     private stepSrvice: StepsService,
     private ngxService: NgxUiLoaderService
@@ -69,7 +70,6 @@ export class DocxComponent implements OnInit {
     this.scriptService.getScript()
       .subscribe((response: any) => {
         this.scriptList = response;
-        console.log(this.scriptList);
       });
   }
 
@@ -79,7 +79,7 @@ export class DocxComponent implements OnInit {
 
   selectScript(scripts: any) {
     this.ngxService.start();
-    if (this.scriptModel !== null) {
+    if (this.scriptModel !== 'null' && this.scriptModel !== null) {
       this.scriptModel['customSteps'] = [];
       this.scriptModel.steps.forEach((element: any) => {
         if (this.stepObj[element]) {
@@ -91,6 +91,10 @@ export class DocxComponent implements OnInit {
   }
 
   selectPlaceholder(text: string) {
+    if (this.scriptModel === null) {
+      this.toastr.warning('Please select script then you can choose placeholder text');
+      return;
+    }
     this.ngxService.start();
     if (text !== null) {
       this.transformStep = [];

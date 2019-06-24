@@ -42,7 +42,7 @@ const appRoute = [
     FormsModule,
     BrowserAnimationsModule, // required animations module
     ToastrModule.forRoot(), // ToastrModule added
-    RouterModule.forRoot(appRoute),
+    RouterModule.forRoot(appRoute, {useHash: true}),
     NgxUiLoaderModule
   ],
   providers: [

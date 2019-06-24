@@ -84,16 +84,19 @@ export class ScriptComponent implements OnInit {
       if (this.script && this.script.steps && this.script.steps.length > 0) {
         this.isEnableSave = 'update';
         this.scriptModel = this.script;
-        this.mapScriptStep();
+        console.log(this.script);
+        this.mapScriptStep(this.script.steps);
       }
     }
   }
 
 // Map Script data if select preexisting data from drop down to make check box as true
 
-  mapScriptStep() {
-    this.script.steps.forEach((listData: any) => {
-      this.stepObj[listData].scriptStatus = true;
+  mapScriptStep(data: any) {
+    data.forEach((listData: any) => {
+      if (this.stepObj[listData]) {
+        this.stepObj[listData].scriptStatus = true;
+      }
     });
   }
 
