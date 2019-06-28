@@ -46,7 +46,7 @@ export class ScriptComponent implements OnInit {
     this.getScript();
   }
 
-// get all steps data from api
+  // get all steps data from api
 
   getSteps() {
     this.stepSrvice.getStep()
@@ -61,7 +61,7 @@ export class ScriptComponent implements OnInit {
       });
   }
 
-// fetch all script data from api
+  // fetch all script data from api
 
   getScript() {
     this.scriptService.getScript()
@@ -84,13 +84,12 @@ export class ScriptComponent implements OnInit {
       if (this.script && this.script.steps && this.script.steps.length > 0) {
         this.isEnableSave = 'update';
         this.scriptModel = this.script;
-        console.log(this.script);
         this.mapScriptStep(this.script.steps);
       }
     }
   }
 
-// Map Script data if select preexisting data from drop down to make check box as true
+  // Map Script data if select preexisting data from drop down to make check box as true
 
   mapScriptStep(data: any) {
     data.forEach((listData: any) => {
@@ -109,7 +108,7 @@ export class ScriptComponent implements OnInit {
     });
   }
 
-// Open Modal for adding new script name
+  // Open Modal for adding new script name
 
   openSaveModal(content) {
     if (this.scriptModel.steps.length === 0) {
@@ -130,7 +129,7 @@ export class ScriptComponent implements OnInit {
       });
   }
 
-// To save record data
+  // To save record data
 
   save() {
     if (!this.stepModel.stepName || !this.stepModel.note) {
@@ -146,7 +145,7 @@ export class ScriptComponent implements OnInit {
       });
   }
 
-// Select check box true aka Adding step into script
+  // Select check box true aka Adding step into script
 
   selectStep(event, id: string) {
     if (event.target.checked === true) {
@@ -161,17 +160,18 @@ export class ScriptComponent implements OnInit {
     }
   }
 
-// Back Navigation to go back in welcome screen
+  // Back Navigation to go back in welcome screen
 
   back() {
     this.route.navigate(['welcome']);
   }
 
-// Save data
+  // Save data
 
   update() {
     if (!this.scriptModel['_id'] || !this.scriptModel.name) {
       this.toastr.error('Script name is required', '');
+      return;
     }
 
     this.scriptService.updateScript(this.scriptModel)

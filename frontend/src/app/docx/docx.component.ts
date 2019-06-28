@@ -73,13 +73,12 @@ export class DocxComponent implements OnInit {
       });
   }
 
-  toggleDropDown() {
-    this.dropdown = !this.dropdown;
-  }
+
+  // Select Script from script list
 
   selectScript(scripts: any) {
     this.ngxService.start();
-    if (this.scriptModel !== 'null' && this.scriptModel !== null) {
+    if (this.scriptModel !== 'null') {
       this.scriptModel['customSteps'] = [];
       this.scriptModel.steps.forEach((element: any) => {
         if (this.stepObj[element]) {
@@ -90,11 +89,14 @@ export class DocxComponent implements OnInit {
     this.ngxService.stop();
   }
 
+// Slect placeholder String
+
   selectPlaceholder(text: string) {
     if (this.scriptModel === null) {
       this.toastr.warning('Please select script then you can choose placeholder text');
       return;
     }
+
     this.ngxService.start();
     if (text !== null) {
       this.transformStep = [];
@@ -114,6 +116,8 @@ export class DocxComponent implements OnInit {
   }
 
 
+  // Relace holder to respect string
+
   replaceStr(stringData: any, value: string) {
     if ((typeof stringData === 'string' || stringData instanceof String)) {
       return stringData.replace(/<<p>>/g, `${value}`);
@@ -122,10 +126,14 @@ export class DocxComponent implements OnInit {
     }
   }
 
+
+  // This section will generate document is word format
+  // Internally he using docx libary
+  // https://www.npmjs.com/package/docx
+
   generateDocx() {
     this.ngxService.start();
     this.welcomeService.addCounter().subscribe((res) => {
-      console.log(res);
     });
 
     const doc = new Document();
@@ -147,20 +155,20 @@ export class DocxComponent implements OnInit {
 
     const table = doc.createTable(optionData);
     this.transformStep.forEach((tableData, currentIndex) => {
-      const cell1 = table.getCell(currentIndex, 0);
+      const cell1 = table.getCell(currentIndex, 0); // create table
       cell1.setMargins({ top: 10, bottom: 10 });
-      cell1.addParagraph(new Paragraph(tableData['stepName']));
+      cell1.addParagraph(new Paragraph(tableData['stepName'])); // add paragrap into table
       const cell2 = table.getCell(currentIndex, 1);
-      cell2.addParagraph(new Paragraph(tableData['note']));
+      cell2.addParagraph(new Paragraph(tableData['note'])); // add paragraph into second cell
     });
 
-    doc.createParagraph('').pageBreak();
-    doc.createParagraph('Hello World 2').pageBreak();
+    doc.createParagraph('').pageBreak();  // Page breaking in docx
+    doc.createParagraph('Hello World 2').pageBreak(); 
 
     const packer = new Packer();
     packer.toBlob(doc).then(blob => {
       this.ngxService.stop();
-      saveAs(blob, `${this.scriptModel.name}.docx`);
+      saveAs(blob, `${this.scriptModel.name}.docx`); // Saving document into docx
     });
   }
 }
