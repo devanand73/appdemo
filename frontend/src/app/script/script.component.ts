@@ -7,6 +7,7 @@ import { Router } from '@angular/router';
 import { STEP, BTNLABEL } from '../constant/app.constant';
 import { ScriptModel } from './script.model';
 import { ScriptService } from './script.service';
+import { NgxUiLoaderService } from 'ngx-ui-loader';
 
 @Component({
   selector: 'app-steps',
@@ -26,7 +27,10 @@ export class ScriptComponent implements OnInit {
   scriptList: [];
   scriptDetail: any;
   stepObj = {};
+
+
   constructor(
+    private ngxService: NgxUiLoaderService,
     config: NgbModalConfig,
     private stepSrvice: StepsService, // Injecting Step service for Add, Fetch and Update
     private toastr: ToastrService, // Injecting Toaster Service for alert,
@@ -58,6 +62,8 @@ export class ScriptComponent implements OnInit {
             this.stepObj[data._id] = data;
           }
         });
+      }, (err) => {
+        this.handelErr(err);
       });
   }
 
@@ -67,6 +73,8 @@ export class ScriptComponent implements OnInit {
     this.scriptService.getScript()
       .subscribe((res: any) => {
         this.scriptList = res;
+      }, (err) => {
+        this.handelErr(err);
       });
   }
 
@@ -124,6 +132,8 @@ export class ScriptComponent implements OnInit {
             .subscribe((data) => {
               this.toastr.success('Script Successfully saved');
               this.route.navigate(['welcome']);
+            }, (err) => {
+              this.handelErr(err);
             });
         }
       });
@@ -142,6 +152,8 @@ export class ScriptComponent implements OnInit {
         this.toastr.success('Step sucessfully saved');
         this.listOfStep.unshift(response);
         this.stepModel = new StepModel();
+      }, (err) => {
+        this.handelErr(err);
       });
   }
 
@@ -178,7 +190,15 @@ export class ScriptComponent implements OnInit {
       .subscribe((res) => {
         this.toastr.success('Script update successfully');
         this.route.navigate(['welcome']);
+      }, (err) => {
+        this.handelErr(err);
       });
+  }
+
+  handelErr(err) {
+    console.log(err);
+    this.toastr.error(err);
+    this.ngxService.stop();
   }
 
 }

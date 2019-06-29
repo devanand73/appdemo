@@ -12,6 +12,7 @@ import { DocxComponent } from './docx.component';
 import { PlaceHolderService } from '../placeholder/placeholder.service';
 import { ScriptService } from '../script/script.service';
 import { StepsService } from '../steps/steps.service';
+import { NgxUiLoaderModule, NgxUiLoaderService } from 'ngx-ui-loader';
 
 const StepList = [{
     stepName: 'Test Fisrt',
@@ -91,7 +92,8 @@ describe('Docx Component', () => {
                 ToastrModule.forRoot(),
                 RouterTestingModule,
                 NgbModule,
-                BrowserAnimationsModule
+                BrowserAnimationsModule,
+                NgxUiLoaderModule
             ],
             providers: [
                 HttpClient,
@@ -104,6 +106,7 @@ describe('Docx Component', () => {
                 HttpHandler,
                 NgbModal,
                 NgbModalConfig,
+                NgxUiLoaderService
             ],
             //    schemas: [CUSTOM_ELEMENTS_SCHEMA]
         }).compileComponents();

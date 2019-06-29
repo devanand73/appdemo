@@ -2,8 +2,8 @@ import { Injectable } from '@angular/core';
 import { environment } from 'src/environments/environment';
 import { StepModel } from './steps.model';
 import { HttpClient } from '@angular/common/http';
-import { map, catchError } from 'rxjs/operators';
-import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
+import { Observable} from 'rxjs';
 import { NgxUiLoaderService } from 'ngx-ui-loader';
 
 @Injectable({
@@ -25,9 +25,6 @@ export class StepsService {
             .pipe(map(responseData => {
                 this.ngxService.stop();
                 return responseData;
-            }), catchError((err) => {
-                this.ngxService.stop();
-                return err;
             }));
     }
 
@@ -37,9 +34,6 @@ export class StepsService {
             .pipe(map(responseData => {
                 this.ngxService.stop();
                 return responseData;
-            }), catchError((err) => {
-                this.ngxService.stop();
-                return err;
             }));
     }
 
@@ -49,9 +43,6 @@ export class StepsService {
             .pipe(map(responseData => {
                 this.ngxService.stop();
                 return responseData;
-            }), catchError((err) => {
-                this.ngxService.stop();
-                return err;
             }));
     }
 
@@ -61,9 +52,6 @@ export class StepsService {
             .pipe(map(responseData => {
                 this.ngxService.stop();
                 return responseData;
-            }), catchError((err) => {
-                this.ngxService.stop();
-                return err;
             }));
     }
 
@@ -72,9 +60,6 @@ export class StepsService {
             .pipe(map(responseData => {
                 this.ngxService.stop();
                 return responseData;
-            }), catchError((err) => {
-                this.ngxService.stop();
-                return err;
             }));
     }
 }

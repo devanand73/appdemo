@@ -4,6 +4,8 @@ import { Injectable, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import {WelcomeComponent} from './welcome.component';
 import {WelcomeService} from './welcome.service';
 import { By } from '@angular/platform-browser'
+import { NgxUiLoaderModule, NgxUiLoaderService } from 'ngx-ui-loader';
+import { ToastrModule, ToastrService } from 'ngx-toastr';
 
 @Injectable()
 class MockWelcomeService { }
@@ -17,8 +19,14 @@ describe('WelcomeComponent', () => {
       declarations: [
         WelcomeComponent
       ],
+      imports: [
+        NgxUiLoaderModule,
+        ToastrModule.forRoot()
+      ],
       providers: [
         {provide: WelcomeService, useClass: MockWelcomeService},
+        NgxUiLoaderService,
+        ToastrService
       ],
       schemas: [ CUSTOM_ELEMENTS_SCHEMA ]
     }).compileComponents();

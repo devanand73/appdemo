@@ -11,6 +11,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { PlaceHolderModel } from './placeholder.model';
 import { PlaceHolderComponent } from './placeholder.component';
 import { PlaceHolderService } from './placeholder.service';
+import { NgxUiLoaderService, NgxUiLoaderModule } from 'ngx-ui-loader';
 
 const StepList = [{
     stepName: 'Test Fisrt',
@@ -78,7 +79,8 @@ describe('Script Component', () => {
                 ToastrModule.forRoot(),
                 RouterTestingModule,
                 NgbModule,
-                BrowserAnimationsModule
+                BrowserAnimationsModule,
+                NgxUiLoaderModule
             ],
             providers: [
                  HttpClient,
@@ -89,6 +91,7 @@ describe('Script Component', () => {
                 HttpHandler,
                 NgbModal,
                 NgbModalConfig,
+                NgxUiLoaderService
             ],
             //    schemas: [CUSTOM_ELEMENTS_SCHEMA]
         }).compileComponents();

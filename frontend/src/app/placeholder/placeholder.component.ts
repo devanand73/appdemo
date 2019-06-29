@@ -3,6 +3,7 @@ import { PlaceHolderService } from './placeholder.service';
 import { PlaceHolderModel } from './placeholder.model';
 import { ToastrService } from 'ngx-toastr';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { NgxUiLoaderService } from 'ngx-ui-loader';
 
 @Component({
   selector: 'app-placeholder',
@@ -17,6 +18,7 @@ export class PlaceHolderComponent implements OnInit {
     private plchldservice: PlaceHolderService,
     private toastr: ToastrService,
     private modalService: NgbModal,
+    private ngxService: NgxUiLoaderService,
   ) {
     this.placeHolderModel = new PlaceHolderModel();
   }
@@ -25,6 +27,8 @@ export class PlaceHolderComponent implements OnInit {
     this.plchldservice.get()
       .subscribe((response: any) => {
         this.placeHolder = response;
+      }, (err) => {
+        this.handelErr(err);
       });
   }
 
@@ -40,6 +44,8 @@ export class PlaceHolderComponent implements OnInit {
         this.placeHolder.unshift(res);
         this.placeHolderModel = new PlaceHolderModel();
         this.toastr.success('Script added successfully', '');
+      }, (err) => {
+        this.handelErr(err);
       });
   }
 
@@ -50,7 +56,7 @@ export class PlaceHolderComponent implements OnInit {
           this.deletePlaceHolder(scrptId, index);
         }
       }, (err) => {
-        console.log(err);
+        this.handelErr(err);
       });
   }
 
@@ -58,7 +64,15 @@ export class PlaceHolderComponent implements OnInit {
     this.plchldservice.delete(scrptId).subscribe((response) => {
       this.placeHolder.splice(index, 1);
       this.toastr.success('Steps successfully deleted');
+    }, (err) => {
+      this.handelErr(err);
     });
+  }
+
+  handelErr(err) {
+    console.log(err);
+    this.toastr.error(err);
+    this.ngxService.stop();
   }
 
 }

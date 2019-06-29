@@ -1,6 +1,13 @@
 const mongoose = require('mongoose');
-const url = "mongodb+srv://anand_15_06:0127ec071016@cluster0-r2nso.mongodb.net/test?retryWrites=true&w=majority";
-mongoose.connect(url, { useNewUrlParser: true, useCreateIndex: true });
+const option = {
+    socketTimeoutMS: 30000,
+    keepAlive: true,
+    reconnectTries: 30000,
+    useNewUrlParser: true, 
+    useCreateIndex: true
+};
+const url = "mongodb+srv://projectx:KmDHl0NtM7fL5PE9@cluster0-5aqpz.mongodb.net/test?retryWrites=true&w=majority";
+mongoose.connect(url, option);
 const db = mongoose.connection;
 db.on('error', console.log.bind(console, 'connection refused !!!'));
 db.once('open', console.log.bind(console, 'connection success !!!'));

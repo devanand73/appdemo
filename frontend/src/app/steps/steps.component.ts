@@ -5,6 +5,7 @@ import { ToastrService } from 'ngx-toastr';
 import { NgbModal, NgbModalConfig } from '@ng-bootstrap/ng-bootstrap';
 import { Router, ActivatedRoute } from '@angular/router';
 import { STEP, BTNLABEL } from '../constant/app.constant';
+import { NgxUiLoaderService } from 'ngx-ui-loader';
 
 @Component({
   selector: 'app-steps',
@@ -19,6 +20,7 @@ export class StepsComponent implements OnInit {
   listOfStep = Array();
 
   constructor(
+    private ngxService: NgxUiLoaderService,
     config: NgbModalConfig,
     private stepSrvice: StepsService, // Injecting Step service for Add, Fetch and Update
     private toastr: ToastrService, // Injecting Toaster Service for alert,
@@ -39,6 +41,8 @@ export class StepsComponent implements OnInit {
     this.stepSrvice.getStep()
       .subscribe((response: any) => {
         this.listOfStep = response;
+      }, (err) => {
+        this.handelErr(err);
       });
   }
 
@@ -50,6 +54,8 @@ export class StepsComponent implements OnInit {
             .subscribe((res) => {
               this.listOfStep.splice(index, 1);
               this.toastr.success('Step successfully deleted');
+            }, (err) => {
+              this.handelErr(err);
             });
         }
       });
@@ -66,11 +72,19 @@ export class StepsComponent implements OnInit {
         this.toastr.success('Step sucessfully saved');
         this.listOfStep.unshift(response);
         this.stepModel = new StepModel();
+      }, (err) => {
+        this.handelErr(err);
       });
   }
 
   back() {
     this.route.navigate(['welcome']);
+  }
+
+  handelErr(err) {
+    this.handelErr(err);
+    this.toastr.error(err);
+    this.ngxService.stop();
   }
 
 }
