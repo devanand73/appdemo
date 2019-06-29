@@ -3,7 +3,7 @@ import { environment } from 'src/environments/environment';
 import { HttpClient } from '@angular/common/http';
 import { map, catchError } from 'rxjs/operators';
 import { ScriptModel } from './script.model';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { NgxUiLoaderService } from 'ngx-ui-loader';
 
 @Injectable({
@@ -27,9 +27,6 @@ export class ScriptService {
             .pipe(map(responseData => {
                 this.ngxService.stop();
                 return responseData;
-            }), catchError((err) => {
-                this.ngxService.stop();
-                return err;
             }));
     }
 
@@ -39,9 +36,6 @@ export class ScriptService {
             .pipe(map(responseData => {
                 this.ngxService.stop();
                 return responseData;
-            }), catchError((err) => {
-                this.ngxService.stop();
-                return err;
             }));
     }
 
@@ -51,9 +45,6 @@ export class ScriptService {
             .pipe(map(responseData => {
                 this.ngxService.stop();
                 return responseData;
-            }), catchError((err) => {
-                this.ngxService.stop();
-                return err;
             }));
     }
 
@@ -63,9 +54,6 @@ export class ScriptService {
             .pipe(map(responseData => {
                 this.ngxService.stop();
                 return responseData;
-            }), catchError((err) => {
-                this.ngxService.stop();
-                return err;
             }));
     }
 
@@ -76,9 +64,6 @@ export class ScriptService {
             .pipe(map(responseData => {
                 this.ngxService.stop();
                 return responseData;
-            }), catchError((err) => {
-                this.ngxService.stop();
-                return err;
             }));
     }
 }

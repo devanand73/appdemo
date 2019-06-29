@@ -534,3 +534,34 @@ button:active {
         left: 0px;
         z-index:0;
     }
+select:hover {
+    cursor: pointer;
+}
+select option:hover {
+    cursor: pointer;
+}
+
+.desktop-hide{
+    display: none;
+}
+
+.mobile-hide {
+    display: block !important;
+}
+
+@media (max-width:480px)  {
+    .mobile-hide {
+        display: none !important;
+    } 
+
+    .dropdown-menu.show, .dropdown-item {
+        width: 100% !important;
+    }
+    .btn.btn-outline-primary.dropdown-toggle {
+        width: 100%;
+    }
+
+    .desktop-hide{
+        display: block !important;
+    }
+}

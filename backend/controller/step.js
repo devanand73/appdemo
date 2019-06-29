@@ -14,7 +14,7 @@ router.post('', function (req, res) {
 	const customer = new Mstep(data);
 	customer.save(function (error, docs) {
 		if (error) {
-			res.status(400).send(ERROR.UNKOWN_ERROR);
+			res.status(400).send(error);
 		} else {
 			res.status(201).send(docs);
 		}
@@ -35,7 +35,7 @@ router.put('', function (req, res) {
 router.get('', function (req, res) {
 	Mstep.find({}, null, function (cerr, data) {
 		if(cerr){
-			res.status(204).send(ERROR.UNKOWN_ERROR);	
+			res.status(204).send(error);	
 		}
 		res.status(200).send(data);
 	});
@@ -46,7 +46,7 @@ router.get('/find/:id', function (req, res) {
 	const id = req.params.id;
 	Mstep.findById(id, function (dbErr, docs) {
 		if (dbErr) {
-			res.status(400).send(ERROR.UNKOWN_ERROR);
+			res.status(400).send(error);
 		}
 		res.status(201).send(docs);
 	});

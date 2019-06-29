@@ -50,6 +50,8 @@ export class DocxComponent implements OnInit {
     this.placeHolderService.get()
       .subscribe((response: any) => {
         this.placeHolderList = response;
+      }, (err) => {
+        this.handelErr(err);
       });
   }
 
@@ -63,6 +65,8 @@ export class DocxComponent implements OnInit {
             this.stepObj[data._id] = data;
           }
         });
+      }, (err) => {
+        this.handelErr(err);
       });
   }
 
@@ -70,6 +74,8 @@ export class DocxComponent implements OnInit {
     this.scriptService.getScript()
       .subscribe((response: any) => {
         this.scriptList = response;
+      }, (err) => {
+        this.handelErr(err);
       });
   }
 
@@ -89,7 +95,7 @@ export class DocxComponent implements OnInit {
     this.ngxService.stop();
   }
 
-// Slect placeholder String
+  // Slect placeholder String
 
   selectPlaceholder(text: string) {
     if (this.scriptModel === null) {
@@ -163,12 +169,18 @@ export class DocxComponent implements OnInit {
     });
 
     doc.createParagraph('').pageBreak();  // Page breaking in docx
-    doc.createParagraph('Hello World 2').pageBreak(); 
+    doc.createParagraph('Hello World 2').pageBreak();
 
     const packer = new Packer();
     packer.toBlob(doc).then(blob => {
       this.ngxService.stop();
       saveAs(blob, `${this.scriptModel.name}.docx`); // Saving document into docx
     });
+  }
+
+  handelErr(err) {
+    console.log(err);
+    this.toastr.error(err);
+    this.ngxService.stop();
   }
 }

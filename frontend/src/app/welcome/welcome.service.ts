@@ -2,7 +2,7 @@ import { Injectable } from "@angular/core";
 import { environment } from 'src/environments/environment';
 import { HttpClient } from '@angular/common/http';
 import { map, catchError } from 'rxjs/operators';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { NgxUiLoaderService } from 'ngx-ui-loader';
 
 @Injectable({
@@ -22,10 +22,7 @@ export class WelcomeService {
             .pipe(map(responseData => {
                 this.ngxService.stop();
                 return responseData;
-             }), catchError((err) => {
-                this.ngxService.stop();
-                return err;
-            }));
+             }));
     }
 
     getCounter(): Observable<any> {
@@ -34,9 +31,6 @@ export class WelcomeService {
             .pipe(map(responseData => {
                 this.ngxService.stop();
                 return responseData;
-            }), catchError((err) => {
-                this.ngxService.stop();
-                return err;
             }));
     }
 }

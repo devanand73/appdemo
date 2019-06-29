@@ -13,6 +13,7 @@ import { Observable, Observer } from 'rxjs';
 import { StepsService } from '../steps/steps.service';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { StepModel } from '../steps/steps.model';
+import { NgxUiLoaderModule, NgxUiLoaderService } from 'ngx-ui-loader';
 
 const StepList = [{
     stepName: 'Test Fisrt',
@@ -135,7 +136,8 @@ describe('Script Component', () => {
                 ToastrModule.forRoot(),
                 RouterTestingModule,
                 NgbModule,
-                BrowserAnimationsModule
+                BrowserAnimationsModule,
+                NgxUiLoaderModule,
             ],
             providers: [
                  HttpClient,
@@ -147,6 +149,7 @@ describe('Script Component', () => {
                 HttpHandler,
                 NgbModal,
                 NgbModalConfig,
+                NgxUiLoaderService
             ],
             //    schemas: [CUSTOM_ELEMENTS_SCHEMA]
         }).compileComponents();

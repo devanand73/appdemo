@@ -1,5 +1,5 @@
 <div class="wrapper">
-    <div class="sidebar-menu">
+    <div class="sidebar-menu mobile-hide">
         <div class="app-name" (click)="toggleNav()">
             <span class="font"><img src="./../assets/images/icons8-menu-48.png"></span>
             <span class="name" [ngClass]="{'d-none': !isExpandNav}">APP DEMO</span>
@@ -42,8 +42,20 @@
     <div class="content-wrapper">
         <header class="mainheader">
             <!-- Fixed navbar -->
-            <nav class="navbar navbar-expand-md pull-right">
-                <form class="form-inline mt-2 mt-md-0">
+            <nav class="navbar navbar-expand-md">
+                <div class="desktop-hide">
+                <div style="width: 100%" ngbDropdown class="d-inline-block">
+                    <button class="btn btn-outline-primary" id="dropdownBasic1" ngbDropdownToggle>Select menu</button>
+                    <div ngbDropdownMenu aria-labelledby="dropdownBasic1">
+                    <button ngbDropdownItem [routerLink]="['/welcome']">Home</button>
+                    <button ngbDropdownItem [routerLink]="['/steps']">Steps</button>
+                    <button ngbDropdownItem [routerLink]="['/script']">Scripts</button>
+                    <button ngbDropdownItem [routerLink]="['/placeholder']">Placeholder Text</button>
+                    <button ngbDropdownItem [routerLink]="['/generate-docx']">Generate Docx</button>
+                    </div>
+                </div>
+                </div>
+                <form class="form-inline mt-2 mt-md-0 mobile-hide">
                     <input class="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search">
                     <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
                 </form>
