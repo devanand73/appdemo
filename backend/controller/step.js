@@ -33,7 +33,7 @@ router.put('', function (req, res) {
 
 
 router.get('', function (req, res) {
-	Mstep.find({}, 'stepsName created_date', function (cerr, data) {
+	Mstep.find({}, null, function (cerr, data) {
 		if(cerr){
 			res.status(204).send(ERROR.UNKOWN_ERROR);	
 		}

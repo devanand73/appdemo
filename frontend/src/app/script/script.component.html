@@ -1,60 +1,69 @@
 <!-- Begin page content -->
 <main role="main" class="container-fluid custom-card">
-  <h1 class="heading-title">Scripts</h1>
-  <form>
+    <h1 class="heading-title">Scripts</h1>
     <div class="row">
-      <div class="col-sm-6">
-        <input class="form-control" autocomplete="off" [(ngModel)]="scriptModel.script" name="script"
-          placeholder="Script" id="script">
+      <div class="col-sm-9">
+       &nbsp;
       </div>
-
-      <div class="col-sm-2">
-        <button type="submit" (click)="addScript()" class="btn btn-primary">Add Script</button>
+      <div class="col-sm-3">
+        <div class="d-flex">
+          <select name="select" class="form-control" (change)="selectScript($event)" [(ngModel)]="script">
+            <option [ngValue]="null">Select script or choose new</option>
+            <option [ngValue]="'new'">New Script</option>
+            <option *ngFor="let sci of scriptList" [ngValue]="sci"> {{ sci.name }}</option>
+          </select>
+        </div>
       </div>
     </div>
-  </form>
-</main>
-
-<main class="container-fluid custom-card">
-  <table class="table table-bordered custom-table step-table">
-    <thead>
+  
+    <div>&nbsp;</div>
+  
+    <table class="table table-bordered custom-table step-table">
+      <thead>
         <tr>
-            <th class="first-column">#</th>
-            <th class="step-column">Steps Name</th>
-            <th class="notes-column">Created Date</th>
-            <th class="action-column">Action</th>
-          </tr>
-    </thead>
+          <th class="first-column">#</th>
+          <th class="step-column">{{ STEPCONST?.tableColStep }}</th>
+          <th class="notes-column">{{ STEPCONST?.tableColNotes }}</th>
+          <th class="action-column">{{ STEPCONST?.tableColAction }}</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let steps of listOfStep; let ind = index">
+          <td>{{ ind + 1 }}</td>
+          <td>{{ steps?.stepName }}</td>
+          <td>{{steps?.note}}</td>
+          <th><label class="checkbox">
+            <input type="checkbox" [(ngModel)]="steps.scriptStatus" (change)="selectStep($event, steps._id, ind)" />
+            <span></span>
+          </label></th>
+        </tr>
+      </tbody>
+    </table>
+    <div>&nbsp;</div>
+  </main>
 
-    <tbody>
-      <tr *ngFor="let stepdata of scriptDetail; let ind = index">
-        <th>{{ ind + 1 }}</th>
-        <td>{{stepdata?.script}}</td>
-        <td>{{stepdata?.created_date | date: shortDate}}</td>
-        <td>
-            <a title="Delete Script" class="action delete" (click)="openModal(content, stepdata._id, ind)">
-                <i class="fa fa-trash" aria-hidden="true"></i> Delete
-            </a>
-        </td>
-      </tr>
-    </tbody>
-  </table>
-</main>
-
-<div class="step-modal">
+  <div class="btn-grp-footer">
+    <div class="d-flex justify-content-end">
+        <button class="btn">Cancel</button>
+        <button *ngIf= "isEnableSave === 'new'" class="btn btn-success ml-2" (click)="openSaveModal(content)">Save As</button>
+        <button *ngIf= "isEnableSave === 'update'" (click)="update()" class="btn btn-success ml-2">Save</button>
+    </div>
+  </div>
+  
+  <div class="step-modal">
     <ng-template #content let-modal>
-      <div class="modal-header red-bg">
-        <h4 class="modal-title" id="modal-basic-title">Delete Steps</h4>
+      <div class="modal-header">
+        <h4 class="modal-title" id="modal-basic-title">Add Script</h4>
         <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
       <div class="modal-body">
-        <p>Are you sure want to delete steps ?</p>
+        <input type="text" class="form-control" name="scriptname" #scriptname value="" placeholder="Script Name">
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn" (click)="modal.dismiss('dismiss')">Cancel</button>
-        <button type="button" class="btn btn-success" (click)="modal.close('delete')">Delete</button>
+        <button type="button" class="btn" (click)="modal.close('cancel')">Cancel</button>
+        <button type="button" class="btn btn-success" (click)="modal.close(scriptname)">Ok</button>
       </div>
     </ng-template>
   </div>

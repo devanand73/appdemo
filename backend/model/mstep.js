@@ -2,10 +2,10 @@ const database = require('../helper/database');
 const Schema = database.Schema;
 
 const StepSchema = new Schema({
-    stepsDetail: Array,
-    stepsName: String,
+    stepName: String,
     status: Boolean,
-    created_date: String,
+    createdDate: String,
+    note: String
 });
 
 const Mstep = database.model('steps', StepSchema);

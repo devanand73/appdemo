@@ -1,11 +1,14 @@
 import { Component, OnInit } from '@angular/core';
-import * as saveAs from "file-saver";
-import { Document, Packer, Paragraph, TextRun, ITableOptions, WidthType } from "docx";
-import { StepsService } from '../steps/steps.service';
-import { StepsoutputService } from './../script/script.service';
-import { StepModel } from '../steps/steps.model';
+import * as saveAs from 'file-saver';
+import { Document, Packer, Paragraph, TextRun, ITableOptions, WidthType } from 'docx';
+import { ScriptService } from './../script/script.service';
 import { ActivatedRoute } from '@angular/router';
 import { WelcomeService } from '../welcome/welcome.service';
+import { ScriptModel } from '../script/script.model';
+import { PlaceHolderService } from '../placeholder/placeholder.service';
+import { StepsService } from '../steps/steps.service';
+import { NgxUiLoaderService } from 'ngx-ui-loader';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-docx',
@@ -14,64 +17,108 @@ import { WelcomeService } from '../welcome/welcome.service';
 })
 export class DocxComponent implements OnInit {
 
+  scriptModel = null;
+  placeHolderModel = null;
   isTransformData = false;
   dropdown: boolean;
   transformStep = [];
-  scriptsList = [];
-  stepModel: StepModel;
+  placeHolderList = [];
+  scriptList = [];
+  scriptDetail: ScriptModel;
+  listOfStep = [];
+  stepObj = {};
+
   constructor(
+    private placeHolderService: PlaceHolderService,
+    private scriptService: ScriptService,
+    private toastr: ToastrService, // Injecting Toaster Service for alert,
+    private welcomeService: WelcomeService,
     private stepSrvice: StepsService,
-    private stepoutservice: StepsoutputService,
-    private activatedRoute: ActivatedRoute,
-    private welcomeService: WelcomeService
-    ) { 
+    private ngxService: NgxUiLoaderService
+  ) {
+    this.scriptDetail = new ScriptModel();
     this.dropdown = false;
   }
 
   ngOnInit() {
-    this.stepModel = new StepModel();
-    this.activatedRoute.params
-    .subscribe((params)=>{
-      this.getStep(params['stepId']);
+    this.getPlaceholder();
+    this.fetchScript();
+    this.getSteps();
+  }
+
+  getPlaceholder() {
+    this.placeHolderService.get()
+      .subscribe((response: any) => {
+        this.placeHolderList = response;
       });
-    
-    this.fetchScrit();
   }
 
-  getStep(id){
-    this.stepSrvice.find(id)
-    .subscribe((response: any)=>{
-      this.stepModel = response;
-      this.transformStep = response.stepsDetail;
-    });
+  getSteps() {
+    this.stepSrvice.getStep()
+      .subscribe((response: any) => {
+        this.listOfStep = response;
+        this.listOfStep.forEach((data) => {
+          data.scriptStatus = false;
+          if (this.stepObj[data._id] === undefined) {
+            this.stepObj[data._id] = data;
+          }
+        });
+      });
+  }
+
+  fetchScript() {
+    this.scriptService.getScript()
+      .subscribe((response: any) => {
+        this.scriptList = response;
+      });
   }
 
 
-  fetchScrit() {
-    this.stepoutservice.getScript()
-    .subscribe((response: any) => {
-      this.scriptsList = response;
-    });
+  // Select Script from script list
+
+  selectScript(scripts: any) {
+    this.ngxService.start();
+    if (this.scriptModel !== 'null') {
+      this.scriptModel['customSteps'] = [];
+      this.scriptModel.steps.forEach((element: any) => {
+        if (this.stepObj[element]) {
+          this.scriptModel['customSteps'].push(this.stepObj[element]);
+        }
+      });
+    }
+    this.ngxService.stop();
   }
 
-  toggleDropDown() {
-    this.dropdown = !this.dropdown;
+// Slect placeholder String
+
+  selectPlaceholder(text: string) {
+    if (this.scriptModel === null) {
+      this.toastr.warning('Please select script then you can choose placeholder text');
+      return;
+    }
+
+    this.ngxService.start();
+    if (text !== null) {
+      this.transformStep = [];
+      const newStepd = JSON.parse(JSON.stringify(this.scriptModel['customSteps']));
+      this.transformStep = newStepd.map((stepsData) => {
+        for (const key in stepsData) {
+          if (key && stepsData[key]) {
+            stepsData[key] = this.replaceStr(stepsData[key], text);
+          }
+        }
+        this.ngxService.stop();
+        return stepsData;
+      });
+      this.dropdown = false;
+      this.isTransformData = true;
+    }
   }
 
-  selectScript(script: any) {
-    this.transformStep = [];
-    const newStepd = JSON.parse(JSON.stringify(this.stepModel.stepsDetail));
-    this.transformStep = newStepd.map((stepsData) => {
-      for(let key in stepsData) {
-        stepsData[key] = this.replaceStr(stepsData[key], script);
-      }
-      return stepsData;
-    });
-    this.dropdown = false;
-    this.isTransformData = true;
-  }
 
-  replaceStr(stringData: any,  value:string) {
+  // Relace holder to respect string
+
+  replaceStr(stringData: any, value: string) {
     if ((typeof stringData === 'string' || stringData instanceof String)) {
       return stringData.replace(/<<p>>/g, `${value}`);
     } else {
@@ -79,10 +126,14 @@ export class DocxComponent implements OnInit {
     }
   }
 
-  generateDocx() {
 
+  // This section will generate document is word format
+  // Internally he using docx libary
+  // https://www.npmjs.com/package/docx
+
+  generateDocx() {
+    this.ngxService.start();
     this.welcomeService.addCounter().subscribe((res) => {
-      console.log(res);
     });
 
     const doc = new Document();
@@ -93,30 +144,31 @@ export class DocxComponent implements OnInit {
       widthUnitType: WidthType.PERCENTAGE
     }
 
-    doc.Header.createParagraph("Hi Demo App You can change ");
+    doc.Header.createParagraph('Hi Demo App You can change ');
 
-    doc.Footer.createParagraph("Foo Bar corp. ")
-    .center()
-    .addRun(new TextRun("Page Number: ").pageNumber())
-    .addRun(new TextRun(" to ").numberOfTotalPages());
+    doc.Footer.createParagraph('Foo Bar corp. ')
+      .center()
+      .addRun(new TextRun('Page Number: ').pageNumber())
+      .addRun(new TextRun(' to ').numberOfTotalPages());
 
-    doc.createParagraph("Hello World 1").pageBreak();
-   
-    const table = doc.createTable(optionData)
-    this.transformStep.forEach((tableData, currentIndex)=>{
-      const cell1 = table.getCell(currentIndex, 0);
-      cell1.setMargins({top: 10, bottom: 10});
-      cell1.addParagraph(new Paragraph(tableData['step']));
+    doc.createParagraph('Hello World 1').pageBreak();
+
+    const table = doc.createTable(optionData);
+    this.transformStep.forEach((tableData, currentIndex) => {
+      const cell1 = table.getCell(currentIndex, 0); // create table
+      cell1.setMargins({ top: 10, bottom: 10 });
+      cell1.addParagraph(new Paragraph(tableData['stepName'])); // add paragrap into table
       const cell2 = table.getCell(currentIndex, 1);
-      cell2.addParagraph(new Paragraph(tableData['note']));
+      cell2.addParagraph(new Paragraph(tableData['note'])); // add paragraph into second cell
     });
-  
-    doc.createParagraph("").pageBreak();
-    doc.createParagraph("Hello World 2").pageBreak();
+
+    doc.createParagraph('').pageBreak();  // Page breaking in docx
+    doc.createParagraph('Hello World 2').pageBreak(); 
 
     const packer = new Packer();
     packer.toBlob(doc).then(blob => {
-      saveAs(blob, `${this.stepModel.stepsName}.docx`);
+      this.ngxService.stop();
+      saveAs(blob, `${this.scriptModel.name}.docx`); // Saving document into docx
     });
   }
 }

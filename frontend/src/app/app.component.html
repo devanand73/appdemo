@@ -14,7 +14,7 @@
             </li>
 
             <li>
-                <a title="Steps" [routerLink]="['/steps-detail']" routerLinkActive="router-link-active">
+                <a title="Steps" [routerLink]="['/steps']" routerLinkActive="router-link-active">
                     <span class="font"><img src="./../assets/images/icons8-staircase-48.png"></span>
                     <span class="link">Steps</span>
                 </a>
@@ -25,13 +25,18 @@
                     <span class="link">Scripts</span>
                 </a>
             </li>
-
-            <!-- <li>
-                <a title="Generate Document" [routerLink]="['/generate-docx']" routerLinkActive="router-link-active" >
+            <li>
+                <a title="Placeholder Text" [routerLink]="['/placeholder']" routerLinkActive="router-link-active">
+                    <span class="font"><img src="./../assets/images/air-filter.png"></span>
+                    <span class="link">Placeholder Text</span>
+                </a>
+            </li>
+            <li>
+                <a title="Generate Document" [routerLink]="['/generate-docx']" routerLinkActive="router-link-active">
                     <span class="font"><img src="./../assets/images/icons8-microsoft-word-48.png"></span>
                     <span class="link">Generate Docx</span>
                 </a>
-            </li> -->
+            </li>
         </ul>
     </div>
     <div class="content-wrapper">
@@ -46,6 +51,7 @@
         </header>
 
         <div class="main-container">
+            <ngx-ui-loader></ngx-ui-loader>
             <router-outlet></router-outlet>
         </div>
         <div class="footer"></div>

@@ -17,8 +17,8 @@ export class WelcomeComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.welcomeService.getCounter().subscribe((res)=>{
-       this.totalCount = res;
+    this.welcomeService.getCounter().subscribe((res) => {
+      this.totalCount = res;
     });
   }
 }
